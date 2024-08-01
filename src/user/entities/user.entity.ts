@@ -1,9 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Booking } from './booking.entity';
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     userId: number;
+
+    @Column()
+    name:string
 
     @Column()
     username: string;
@@ -17,7 +21,13 @@ export class User {
     @Column()
     contactNumber: string;
 
-
     @Column()
     role: string; // for authorization
+
+    @OneToMany(() => Booking, (booking) => booking.user)
+    bookings: Booking[];
 }
+
+
+
+
