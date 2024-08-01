@@ -1,12 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
 import { Booking } from './entities/booking.entity';
 import { UmrahPackage } from './entities/umrah.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-
 @Injectable()
 export class UserService {
   constructor(
@@ -16,38 +15,37 @@ export class UserService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) { }
 
-
-
-
-  async search(username: string) {
+  async search(username: any) {
     console.log('Start search.........');
-
     try {
-      //Check cache first
-      const cachedResult = await this.cacheManager.get(username);
+      // Check cache first
+      const cacheKey = `user-bookings-${username}`;
+      const cachedResult = await this.cacheManager.get(cacheKey);
       if (cachedResult) {
-        console.log('Returning cached result');
+        console.log('Returning cached result:', cachedResult);
         return cachedResult;
       }
 
+      console.log('Cache miss, querying database...');
+
       // Perform database query
-      const users = await this.userRepository
+      const bookingDetails = await this.userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.bookings', 'booking')
         .leftJoinAndSelect('booking.umrahPackage', 'umrahPackage')
-        .where('user.username LIKE :username', { username: `%${username}%` }) // Use LIKE for filtering
+        .where('user.username LIKE :username', { username: `%${username}%` })
         .getMany();
 
-      // console.log('Users found:', users);
+      // console.log('Users found:', bookingDetails);
 
-      //Cache the result
-      await this.cacheManager.set(username, users, 60); // Cache for 60 seconds
+      // Cache the result
+      await this.cacheManager.set(cacheKey, bookingDetails, 1000); // Cache for 1000 seconds
+      console.log("Cached the result with key:", cacheKey);
 
-      return users;
+      return bookingDetails;
     } catch (error) {
       console.error('Error occurred during search:', error);
       throw new Error('Unable to perform search');
     }
   }
-
 }

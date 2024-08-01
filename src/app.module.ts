@@ -6,7 +6,8 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { UmrahPackage } from './user/entities/umrah.entity';
 import { Booking } from './user/entities/booking.entity';
-import { FlatESLint } from 'eslint/use-at-your-own-risk';
+import { CacheModule } from '@nestjs/cache-manager';
+
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -21,13 +22,17 @@ import { FlatESLint } from 'eslint/use-at-your-own-risk';
     ],
     synchronize: true,
   }),
+
+  CacheModule.register({
+    // Redis server host // Redis server port
+    ttl: 1000, // Default TTL in seconds
+    max: 10000, // Maximum number of items in cache
+  }),
     UserModule
   ],
 
-  // CacheModule.register({
-  //   ttl: 60, // seconds, time-to-live for cache
-  //   max: 10, // maximum number of items in cache
-  // }),
+
+
   controllers: [AppController],
   providers: [AppService],
 })

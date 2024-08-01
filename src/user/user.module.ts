@@ -8,8 +8,16 @@ import { Booking } from './entities/booking.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [CacheModule.register(), TypeOrmModule.forFeature([User, UmrahPackage, Booking])],
+  imports: [TypeOrmModule.forFeature([User, UmrahPackage, Booking]
+  ),
+  CacheModule.register({
+    isGlobal: true,
+    ttl: 1000, // Default TTL in seconds
+    max: 1000, // Maximum number of items in cache
+  }),
+
+  ],
   controllers: [UserController],
   providers: [UserService],
 })
-export class UserModule { }
+export class UserModule {}
