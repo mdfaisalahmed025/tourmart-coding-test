@@ -7,6 +7,9 @@ import { User } from './user/entities/user.entity';
 import { UmrahPackage } from './user/entities/umrah.entity';
 import { Booking } from './user/entities/booking.entity';
 import { CacheModule } from '@nestjs/cache-manager';
+import { APP_GUARD } from '@nestjs/core';
+import { PoliciesGuard } from './user/policy.guard';
+import { AbilityFactory } from './user/ability.factor';
 
 
 @Module({
@@ -31,9 +34,10 @@ import { CacheModule } from '@nestjs/cache-manager';
     UserModule
   ],
 
-
-
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AbilityFactory, {
+    provide: APP_GUARD,
+    useClass:PoliciesGuard
+  },],
 })
 export class AppModule { }

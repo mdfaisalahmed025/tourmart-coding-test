@@ -7,7 +7,7 @@ export class User {
     userId: number;
 
     @Column()
-    name:string
+    name: string
 
     @Column()
     username: string;
@@ -26,7 +26,17 @@ export class User {
 
     @OneToMany(() => Booking, (booking) => booking.user)
     bookings: Booking[];
+    roles: Role[];
 }
+
+
+// roles.enum.ts
+export enum Role {
+    ADMIN = 'admin',
+    USER = 'user',
+    EDITOR = 'editor',
+}
+
 
 
 

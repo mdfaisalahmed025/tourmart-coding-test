@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { UmrahPackage } from './entities/umrah.entity';
 import { Booking } from './entities/booking.entity';
 import { CacheModule } from '@nestjs/cache-manager';
+import { AbilityFactory } from './ability.factor';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UmrahPackage, Booking]
@@ -18,6 +19,6 @@ import { CacheModule } from '@nestjs/cache-manager';
 
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [AbilityFactory, UserService],
 })
 export class UserModule {}

@@ -1,13 +1,16 @@
 import { Inject, Injectable, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { Role, User } from './entities/user.entity';
 import { Booking } from './entities/booking.entity';
 import { UmrahPackage } from './entities/umrah.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 @Injectable()
 export class UserService {
+  findOne(arg0: number, user: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Booking) private bookingRepository: Repository<Booking>,
@@ -48,4 +51,37 @@ export class UserService {
       throw new Error('Unable to perform search');
     }
   }
+
+  async findOneById(userId: number): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { userId } });
+  }
+
+
+  // Methods for role-based access control
+  async hasRole(user: User, role: Role): Promise<boolean> {
+    return user.role === role;
+  }
+
+  async isAdmin(userId: number): Promise<boolean> {
+    const user = await this.findOneById(userId);
+    return user.role === Role.ADMIN;
+  }
+
+  async isEditor(userId: number): Promise<boolean> {
+    const user = await this.findOneById(userId);
+    return user.role === Role.EDITOR;
+  }
+
+  async isGeneralUser(userId: number): Promise<boolean> {
+    const user = await this.findOneById(userId);
+    return user.role === Role.USER;
+  }
+
+
+  async getAllbooking() {
+    const data = await this.bookingRepository.find({})
+    return data
+  }
+
+
 }
