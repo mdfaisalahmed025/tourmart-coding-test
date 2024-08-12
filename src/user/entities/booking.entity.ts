@@ -11,7 +11,7 @@ export class Booking {
     date: Date;
 
     @Column()
-    username:string
+    username: string
 
     @ManyToOne(() => User, (user) => user.bookings)
     user: User;

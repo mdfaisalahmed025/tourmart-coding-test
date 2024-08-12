@@ -1,11 +1,12 @@
 import { Inject, Injectable, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role, User } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { Booking } from './entities/booking.entity';
 import { UmrahPackage } from './entities/umrah.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { Role } from './roles.enum';
 @Injectable()
 export class UserService {
   findOne(arg0: number, user: any) {
@@ -52,8 +53,16 @@ export class UserService {
     }
   }
 
-  async findOneById(userId: number): Promise<User | undefined> {
-    return this.userRepository.findOne({ where: { userId } });
+  async validateUser(username: string, password: string): Promise<User | null> {
+    const user = await this.findOneByusername(username);
+    if (user && user.password === password) { // In practice, use hashed passwords
+      return user;
+    }
+    return null;
+  }
+
+  async findOneByusername(username: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { username } });
   }
 
 
@@ -62,18 +71,18 @@ export class UserService {
     return user.role === role;
   }
 
-  async isAdmin(userId: number): Promise<boolean> {
-    const user = await this.findOneById(userId);
+  async isAdmin(username: string): Promise<boolean> {
+    const user = await this.findOneByusername(username);
     return user.role === Role.ADMIN;
   }
 
-  async isEditor(userId: number): Promise<boolean> {
-    const user = await this.findOneById(userId);
+  async isEditor(username: string): Promise<boolean> {
+    const user = await this.findOneByusername(username);
     return user.role === Role.EDITOR;
   }
 
-  async isGeneralUser(userId: number): Promise<boolean> {
-    const user = await this.findOneById(userId);
+  async isGeneralUser(username: string): Promise<boolean> {
+    const user = await this.findOneByusername(username);
     return user.role === Role.USER;
   }
 

@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Booking } from './booking.entity';
+import { Token } from '../entity.token';
+import { Role } from '../roles.enum';
 
 @Entity()
 export class User {
@@ -7,7 +9,7 @@ export class User {
     userId: number;
 
     @Column()
-    name: string
+    name: string;
 
     @Column()
     username: string;
@@ -21,21 +23,18 @@ export class User {
     @Column()
     contactNumber: string;
 
-    @Column()
-    role: string; // for authorization
+    @Column({ type: 'enum', enum: Role, default: Role.USER })
+    role: Role; // Update this to reflect the role as a single enum value
 
     @OneToMany(() => Booking, (booking) => booking.user)
     bookings: Booking[];
-    roles: Role[];
+
+    @OneToMany(() => Token, (token) => token.user)
+    tokens: Token[];
 }
 
 
-// roles.enum.ts
-export enum Role {
-    ADMIN = 'admin',
-    USER = 'user',
-    EDITOR = 'editor',
-}
+
 
 
 

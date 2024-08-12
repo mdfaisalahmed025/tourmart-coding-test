@@ -10,6 +10,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { APP_GUARD } from '@nestjs/core';
 import { PoliciesGuard } from './user/policy.guard';
 import { AbilityFactory } from './user/ability.factor';
+import { Token } from './user/entity.token';
+import { FlatESLint } from 'eslint/use-at-your-own-risk';
 
 
 @Module({
@@ -21,9 +23,9 @@ import { AbilityFactory } from './user/ability.factor';
     database: 'tourmartlimited',
     port: 3306,
     entities: [
-      User, UmrahPackage, Booking
+      User, UmrahPackage, Booking, Token
     ],
-    synchronize: true,
+    synchronize: false,
   }),
 
   CacheModule.register({
@@ -35,9 +37,16 @@ import { AbilityFactory } from './user/ability.factor';
   ],
 
   controllers: [AppController],
-  providers: [AppService, AbilityFactory, {
-    provide: APP_GUARD,
-    useClass:PoliciesGuard
-  },],
+  providers: [AppService,
+
+
+    // AbilityFactory,
+    //  {
+    //   provide: APP_GUARD,
+    //   useClass: PoliciesGuard
+    // },
+
+
+  ],
 })
 export class AppModule { }
