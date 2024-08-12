@@ -61,9 +61,53 @@ export class UserService {
     return null;
   }
 
+
+  async registerUser(
+    name: string,
+    username: string,
+    email: string,
+    contactNumber: string,
+    password: string,
+    role: Role = Role.USER, // Default role is USER
+  ): Promise<User> {
+    const user = new User();
+    user.name = name;
+    user.username = username;
+    user.email = email;
+    user.contactNumber = contactNumber;
+    user.password = password;
+    user.role = role;
+
+    return await this.userRepository.save(user);
+  }
+
   async findOneByusername(username: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { username } });
   }
+
+  async findAlluser(): Promise<User[] | undefined> {
+    return this.userRepository.find({ where: {} })
+  }
+
+  async findAllPackages(): Promise<UmrahPackage[] | undefined> {
+    return this.umrahPackageRepository.find({ where: {} })
+  }
+
+  async createUmrahPackage(
+    name: string,
+    packageName: string,
+    totalDuration: string,
+    price: number,
+  ): Promise<UmrahPackage> {
+    const umrahPackage = new UmrahPackage();
+    umrahPackage.name = name;
+    umrahPackage.packageName = packageName;
+    umrahPackage.totalDuration = totalDuration;
+    umrahPackage.price = price;
+
+    return await this.umrahPackageRepository.save(umrahPackage);
+  }
+
 
 
   // Methods for role-based access control

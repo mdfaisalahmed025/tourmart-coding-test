@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Booking } from './booking.entity';
-import { Token } from '../entity.token';
 import { Role } from '../roles.enum';
 
 @Entity()
@@ -28,9 +27,6 @@ export class User {
 
     @OneToMany(() => Booking, (booking) => booking.user)
     bookings: Booking[];
-
-    @OneToMany(() => Token, (token) => token.user)
-    tokens: Token[];
 }
 
 

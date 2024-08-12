@@ -10,7 +10,6 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { APP_GUARD } from '@nestjs/core';
 import { PoliciesGuard } from './user/policy.guard';
 import { AbilityFactory } from './user/ability.factor';
-import { Token } from './user/entity.token';
 import { FlatESLint } from 'eslint/use-at-your-own-risk';
 
 
@@ -23,7 +22,7 @@ import { FlatESLint } from 'eslint/use-at-your-own-risk';
     database: 'tourmartlimited',
     port: 3306,
     entities: [
-      User, UmrahPackage, Booking, Token
+      User, UmrahPackage, Booking,
     ],
     synchronize: false,
   }),
